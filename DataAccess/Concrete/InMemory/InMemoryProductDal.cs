@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using DataAccess.Abstract;
@@ -62,15 +63,29 @@ namespace DataAccess.Concrete.InMemory
         {
             Product productToUpdate = _products.SingleOrDefault(P => P.ProductId == product.ProductId);
 
-            productToUpdate.ProductName = productToUpdate.ProductName;
-            productToUpdate.CategoryId = productToUpdate.CategoryId;
-            productToUpdate.UnitsInStock = productToUpdate.UnitsInStock;
-            productToUpdate.UnitPrice = productToUpdate.UnitPrice;
+            if (productToUpdate != null)
+            {
+                productToUpdate.ProductName = product.ProductName;
+                productToUpdate.CategoryId = product.CategoryId;
+                productToUpdate.UnitsInStock = product.UnitsInStock;
+                productToUpdate.UnitPrice = product.UnitPrice;
+            }
+
         }
 
         public List<Product> GetAllByCategory(int categoryId)
         {
             return _products.Where(p => p.CategoryId == categoryId).ToList();
+        }
+
+        public List<Product> GetAll(Expression<Func<Product, bool>> filter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Product Get(Expression<Func<Product, bool>> filter)
+        {
+            throw new NotImplementedException();
         }
     }
 }
