@@ -4,11 +4,12 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
-using Entities.Abstract;
+using Core.Entities;
 
 namespace Entities.Concrete
 {
     // Çıplak Class Kalmasın
+
     public class Category : IEntity
     {
         public int CategoryId { get; set; }
