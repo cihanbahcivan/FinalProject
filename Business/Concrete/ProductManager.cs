@@ -18,34 +18,38 @@ namespace Business.Concrete
         private IProductDal _productDal;
 
         public ProductManager(IProductDal productDal)
-        {
+        { 
             _productDal = productDal;
         }
 
         public IDataResult<List<Product>> GetAll()
         {
-            if (DateTime.Now.Hour == 22)
+            if (DateTime.Now.Hour == 23)
             {
-                return new ErrorResult();
+                return new ErrorDataResult<List<Product>>(Messages.MaintenanceTime);
             }
             //İş Kodları
 
-            return new SuccessDataResult<List<Product>>(_productDal.GetAll(),true,"");
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(),Messages.ProductsListed);
         }
 
-        public List<Product> GetAllByCategoryId(int id)
+        public IDataResult<List<Product>> GetAllByCategoryId(int id)
         {
-            return _productDal.GetAll(p => p.CategoryId == id);
+            return  new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.CategoryId == id));
         }
 
-        public List<Product> GetByUnitPrice(decimal min, decimal max)
+        public IDataResult<List<Product>> GetByUnitPrice(decimal min, decimal max)
         {
-            return _productDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max);
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(p => p.UnitPrice >= min && p.UnitPrice <= max));
         }
 
-        public List<ProductDetailDto> GetProductDetails()
+        public IDataResult<List<ProductDetailDto>> GetProductDetails()
         {
-            return _productDal.GetProductDetails();
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorDataResult<List<ProductDetailDto>>(Messages.MaintenanceTime);
+            }
+            return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails());
         }
 
         public IResult Add(Product product)
@@ -62,9 +66,9 @@ namespace Business.Concrete
             return new Result(true,Messages.ProductAdded);
         }
 
-        public Product GetById(int productId)
+        public IDataResult<Product> GetById(int productId)
         {
-            return _productDal.Get(c => c.ProductId == productId);
+            return new SuccessDataResult<Product>(_productDal.Get(c => c.ProductId == productId));
         }
     }
 }
