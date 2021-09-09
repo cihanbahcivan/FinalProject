@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Business.Abstract;
+using Business.Constants;
 using Core.Utilities.Results;
 using DataAccess.Abstract;
 using DataAccess.Concrete.InMemory;
@@ -20,11 +22,15 @@ namespace Business.Concrete
             _productDal = productDal;
         }
 
-        public List<Product> GetAll()
+        public IDataResult<List<Product>> GetAll()
         {
+            if (DateTime.Now.Hour == 22)
+            {
+                return new ErrorResult();
+            }
             //İş Kodları
 
-            return _productDal.GetAll();
+            return new SuccessDataResult<List<Product>>(_productDal.GetAll(),true,"");
         }
 
         public List<Product> GetAllByCategoryId(int id)
@@ -49,11 +55,11 @@ namespace Business.Concrete
 
             if (product.ProductName.Length < 2)
             {
-                return new ErrorResult("Ürün ismi min 2 karakter olmalıdır");
+                return new ErrorResult(Messages.ProductNameInvalid); 
             }
             _productDal.Add(product);
 
-            return new Result(true,"Ürün eklendi");
+            return new Result(true,Messages.ProductAdded);
         }
 
         public Product GetById(int productId)
