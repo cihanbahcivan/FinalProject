@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
@@ -22,10 +23,10 @@ namespace Business.Concrete
 {
     public class ProductManager : IProductService
     {
-        private IProductDal _productDal;
-        private ICategoryService _categoryService;
+        private readonly IProductDal _productDal;
+        private readonly ICategoryService _categoryService;
 
-        public ProductManager(IProductDal productDal,ICategoryService categoryService)
+        public ProductManager(IProductDal productDal, ICategoryService categoryService)
         {
             _productDal = productDal;
             _categoryService = categoryService;
@@ -62,7 +63,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<ProductDetailDto>>(_productDal.GetProductDetails());
         }
         //Claim
-        //[SecuredOperation("product.add")]
+        [SecuredOperation("product.add,admin")]
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
